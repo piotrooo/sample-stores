@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on:
+      group: thulium-ubuntu-runners
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Install the latest FGA CLI
+        run: |
+          FGA_CLI_VERSION=$(curl -sL https://api.github.com/repos/openfga/cli/releases/latest | jq -r ".tag_name")
+          curl -sLS https://github.com/openfga/cli/releases/download/${FGA_CLI_VERSION}/fga_${FGA_CLI_VERSION#v}_linux_amd64.deb -o fga-cli.deb
+          sudo dpkg -i ./fga-cli.deb
+
+      - name: Run the tests
+        run: run-tests.sh
