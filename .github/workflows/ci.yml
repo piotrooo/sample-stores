@@ -25,4 +25,4 @@ jobs:
           sudo dpkg -i ./fga-cli.deb
 
       - name: Run the tests
-        run: ./run-tests.sh
+        uses: piotrooo/openfga-test-runner@main
